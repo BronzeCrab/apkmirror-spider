@@ -1,0 +1,3 @@
+Scrapy==2.6.1
+scrapy-cloudflare-middleware==0.0.1
+scrapy-proxies==0.4
