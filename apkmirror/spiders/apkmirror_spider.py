@@ -41,17 +41,19 @@ class ApkmirrorSpider(scrapy.Spider):
             '///a[@class="downloadLink"]/@href').extract_first()
 
         array_of_data = response.xpath(
-            '//div[@class="infoSlide t-height activated"]/'
+            '//div[@class="infoSlide t-height"]/'
             'p/span[@class="infoSlide-value"]/text()').extract()
         if len(array_of_data) >= 4:
-            version = array_of_data[0]
-            uploaded = array_of_data[1]
-            file_size = array_of_data[2]
-            downloads = array_of_data[3]
-            apk_item['version'] = version
-            apk_item['uploaded'] = uploaded
-            apk_item['file_size'] = file_size
-            apk_item['downloads'] = downloads
+            for data in array_of_data[:4]:
+                if 'mb' in data.lower():
+                    apk_item['file_size'] = data
+                elif 'gmt' in data.lower():
+                    apk_item['uploaded'] = data
+                elif data.count('.') >= 2:
+                    apk_item['version'] = data
+                else:
+                    apk_item['downloads'] = data
+
         apk_item['apk_link'] = apk_link
         apk_item['download_link'] = download_link
         yield apk_item
